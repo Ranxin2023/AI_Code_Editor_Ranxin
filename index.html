@@ -121,9 +121,7 @@
             </div>
         </div>
         <div class="item">
-            <div class="ui input">
-                <select id="select-language" class="ui search selection dropdown"></select>
-            </div>
+            <select id="select-language" class="ui search selection dropdown"></select>
         </div>
         <div class="item">
             <div class="ui left icon transparent input">
@@ -180,11 +178,33 @@
     </div>
 
     <div id="judge0-chat-container" class="ui segment">
+        <div class="ui top attached borderless mini menu">
+            <div class="right menu">
+                <div class="fitted item">
+                    <select id="judge0-chat-model-select" class="ui search selection dropdown item">
+                        <option>gpt-4o-mini</option>
+                        <option>gpt-4o</option>
+                        <option>o3-mini</option>
+                        <option>o1-mini</option>
+                        <option>claude-3-5-sonnet</option>
+                        <option>deepseek-chat</option>
+                        <option>deepseek-reasoner</option>
+                        <option>meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo</option>
+                        <option>meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo</option>
+                        <option>meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo</option>
+                        <option>mistral-large-latest</option>
+                        <option>pixtral-large-latest</option>
+                        <option>codestral-latest</option>
+                        <option>google/gemma-2-27b-it</option>
+                        <option>grok-beta</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <div id="judge0-chat-messages"></div>
         <div id="judge0-chat-input-container" class="ui basic segment">
-            <form id="judge0-chat-form" class="ui fluid small right icon transparent input">
-                <input id="judge0-chat-user-input" type="text" placeholder="Ask AI">
-                <i class="arrow up icon"></i>
+            <form id="judge0-chat-form" class="ui fluid transparent input">
+                <input id="judge0-chat-user-input" type="text" placeholder="Message AI">
             </form>
         </div>
     </div>

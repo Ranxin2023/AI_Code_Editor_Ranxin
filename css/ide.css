@@ -9,6 +9,10 @@
     padding: 0;
 }
 
+#judge0-chat-container > .ui.menu {
+    border-bottom: none;
+}
+
 #judge0-chat-messages {
     flex-grow: 1;
     overflow-y: auto;

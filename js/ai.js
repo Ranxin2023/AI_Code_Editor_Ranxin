@@ -47,11 +47,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         userInput.disabled = true;
-        event.target.classList.add("loading");
 
         const userMessage = document.createElement("div");
         userMessage.innerText = userInputValue;
-        userMessage.classList.add("ui", "small", "segment", "judge0-message", "judge0-user-message");
+        userMessage.classList.add("ui", "message", "judge0-message", "judge0-user-message");
         if (!theme.isLight()) {
             userMessage.classList.add("inverted");
         }
@@ -75,12 +74,16 @@ ${userInputValue}
 
 
         const aiMessage = document.createElement("div");
-        aiMessage.classList.add("ui", "small", "basic", "segment", "judge0-message");
+        aiMessage.classList.add("ui", "basic", "segment", "judge0-message", "loading");
         if (!theme.isLight()) {
             aiMessage.classList.add("inverted");
         }
+        messages.appendChild(aiMessage);
+        messages.scrollTop = messages.scrollHeight;
 
-        const aiResponse = await puter.ai.chat(THREAD);
+        const aiResponse = await puter.ai.chat(THREAD, {
+            model: document.getElementById("judge0-chat-model-select").value,
+        });
         let aiResponseValue = aiResponse.toString();
         if (typeof aiResponseValue !== "string") {
             aiResponseValue = aiResponseValue.map(v => v.text).join("\n");
@@ -100,12 +103,16 @@ ${userInputValue}
         });
         aiMessage.innerHTML = marked.parse(aiMessage.innerHTML);
 
-        messages.appendChild(aiMessage);
+        aiMessage.classList.remove("loading");
         messages.scrollTop = messages.scrollHeight;
 
         userInput.disabled = false;
-        event.target.classList.remove("loading");
         userInput.focus();
+    });
+
+    document.getElementById("judge0-chat-model-select").addEventListener("change", function () {
+        const userInput = document.getElementById("judge0-chat-user-input");
+        userInput.placeholder = `Message ${this.value}`;
     });
 });
 

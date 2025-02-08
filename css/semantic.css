@@ -24,3 +24,14 @@
 .ui.primary.buttons .active.button:active {
     background-color: #1c2e85;
 }
+
+.ui.selection.dropdown.item>.delete.icon,
+.ui.selection.dropdown.item>.dropdown.icon,
+.ui.selection.dropdown.item>.search.icon {
+    margin: -.78571429em;
+    padding: .91666667em;
+}
+
+.ui.selection.dropdown.item {
+    border: none;
+}

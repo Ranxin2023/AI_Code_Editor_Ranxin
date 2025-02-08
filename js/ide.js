@@ -70,7 +70,7 @@ var layoutConfig = {
                 height: 66,
                 componentName: "ai",
                 id: "ai",
-                title: `AI`,
+                title: "AI Coding Assistant",
                 isClosable: false,
                 componentState: {
                     readOnly: false
@@ -477,7 +477,7 @@ function refreshLayoutSize() {
 
 window.addEventListener("resize", refreshLayoutSize);
 document.addEventListener("DOMContentLoaded", async function () {
-    $("#select-language").dropdown();
+    $(".ui.selection.dropdown").dropdown();
     $("[data-content]").popup({
         lastResort: "left center"
     });
