@@ -91,7 +91,14 @@ ${userInputValue}
             content: aiResponseValue
         });
 
-        aiMessage.innerHTML = DOMPurify.sanitize(marked.parse(aiResponseValue));
+        aiMessage.innerHTML = DOMPurify.sanitize(aiResponseValue);
+        renderMathInElement(aiMessage, {
+            delimiters: [
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });
+        aiMessage.innerHTML = marked.parse(aiMessage.innerHTML);
 
         messages.appendChild(aiMessage);
         messages.scrollTop = messages.scrollHeight;
