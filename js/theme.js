@@ -17,7 +17,7 @@ const theme = {
 
         monaco.editor.setTheme(isLight ? "vs-light" : "vs-dark");
 
-        [".ui.menu", ".ui.input", ".ui.basic.button"].forEach(s => document.querySelectorAll(s).forEach(e => {
+        [".ui.menu", ".ui.input", ".ui.basic.button", ".ui.segment"].forEach(s => document.querySelectorAll(s).forEach(e => {
             if (isLight) {
                 e.classList.remove("inverted");
             } else {
@@ -95,6 +95,11 @@ const theme = {
     },
     getReverseSystemTheme() {
         return theme.getSystemTheme() === "dark" ? "light" : "dark";
+    },
+    isLight() {
+        const currentTheme = theme.get();
+        const resolvedTheme = currentTheme === "system" ? theme.getSystemTheme() : (currentTheme === "reverse-system" ? theme.getReverseSystemTheme() : currentTheme);
+        return resolvedTheme === "light";
     }
 };
 

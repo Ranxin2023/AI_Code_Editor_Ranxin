@@ -2,6 +2,28 @@
     min-width: 15rem !important;
 }
 
+#judge0-chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+}
+
+#judge0-chat-messages {
+    flex-grow: 1;
+    overflow-y: scroll;
+}
+
+.judge0-user-message {
+    margin-left: 33% !important;
+    margin-top: 1em !important;
+    max-width: 66%;
+}
+
+#judge0-chat-input-container {
+    margin-top: 0;
+}
+
 #judge0-status-line:empty {
     display: none;
 }

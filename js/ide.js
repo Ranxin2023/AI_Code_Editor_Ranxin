@@ -31,7 +31,7 @@ var fontSize = 13;
 
 var layout;
 
-var sourceEditor;
+export var sourceEditor;
 var stdinEditor;
 var stdoutEditor;
 
@@ -67,22 +67,36 @@ var layoutConfig = {
             type: "column",
             content: [{
                 type: "component",
-                componentName: "stdin",
-                id: "stdin",
-                title: "Input",
+                height: 66,
+                componentName: "ai",
+                id: "ai",
+                title: `AI`,
                 isClosable: false,
                 componentState: {
                     readOnly: false
                 }
             }, {
-                type: "component",
-                componentName: "stdout",
-                id: "stdout",
-                title: "Output",
-                isClosable: false,
-                componentState: {
-                    readOnly: true
-                }
+                type: "stack",
+                content: [
+                    {
+                        type: "component",
+                        componentName: "stdin",
+                        id: "stdin",
+                        title: "Input",
+                        isClosable: false,
+                        componentState: {
+                            readOnly: false
+                        }
+                    }, {
+                        type: "component",
+                        componentName: "stdout",
+                        id: "stdout",
+                        title: "Output",
+                        isClosable: false,
+                        componentState: {
+                            readOnly: true
+                        }
+                    }]
             }]
         }]
     }]
@@ -507,33 +521,37 @@ document.addEventListener("DOMContentLoaded", async function () {
     $(document).on("keydown", "body", function (e) {
         if (e.metaKey || e.ctrlKey) {
             switch (e.key) {
-                case "Enter": // Ctrl+Enter, Cmd+Enter
+                case "Enter":
                     e.preventDefault();
                     run();
                     break;
-                case "s": // Ctrl+S, Cmd+S
+                case "s":
                     e.preventDefault();
                     saveAction();
                     break;
-                case "o": // Ctrl+O, Cmd+O
+                case "o":
                     e.preventDefault();
                     openAction();
                     break;
-                case "+": // Ctrl+Plus
-                case "=": // Some layouts use '=' for '+'
+                case "+":
+                case "=":
                     e.preventDefault();
                     fontSize += 1;
                     setFontSizeForAllEditors(fontSize);
                     break;
-                case "-": // Ctrl+Minus
+                case "-":
                     e.preventDefault();
                     fontSize -= 1;
                     setFontSizeForAllEditors(fontSize);
                     break;
-                case "0": // Ctrl+0
+                case "0":
                     e.preventDefault();
                     fontSize = 13;
                     setFontSizeForAllEditors(fontSize);
+                    break;
+                case "`":
+                    e.preventDefault();
+                    sourceEditor.focus();
                     break;
             }
         }
@@ -581,6 +599,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                     enabled: false
                 }
             });
+        });
+
+        layout.registerComponent("ai", function (container, state) {
+            container.getElement()[0].appendChild(document.getElementById("judge0-chat-container"));
         });
 
         layout.on("initialised", function () {
