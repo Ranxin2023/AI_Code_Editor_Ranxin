@@ -84,7 +84,7 @@
 
 <body>
     <div id="judge0-site-navigation" class="ui top fixed borderless menu">
-        <a id="judge0-header" href="https://judge0.com" target="_blank" class="header item judge0-minimal-hidden judge0-standalone-hidden judge0-electron-hidden judge0-puter-hidden">
+        <a id="judge0-header" href="https://judge0.com" target="_blank" class="header item judge0-default-visible">
             <img id="judge0-logo" src="./images/icon_var2_rounded_512.png">
         </a>
         <div class="ui simple dropdown item">
@@ -172,9 +172,12 @@
         </div>
     </div>
 
-    <div id="judge0-status-line" class="ui bottom right attached label"></div>
+    <div id="judge0-status-line" class="ui bottom right attached mini label"></div>
 
-    <!-- <i class="copyright outline icon"></i>2016-2025 Judge0 d.o.o. – All Rights Reserved. -->
+    <a id="judge0-copyright" href="https://judge0.com" target="_blank" class="ui bottom left attached mini label judge0-default-visible">
+        © 2016-2025 Judge0 d.o.o. – All Rights Reserved.
+    </a>
+
     <script>
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("sw.js").then(() => console.log("Service Worker Registered"));

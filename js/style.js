@@ -16,6 +16,16 @@ const style = {
         } else {
             style.SUPPORTED_STYLES.forEach(s => style.reverse(s));
         }
+
+        style.SUPPORTED_STYLES.forEach(s => {
+            document.querySelectorAll(`.judge0-${s}-visible`).forEach(e => {
+                if (s === resolvedName) {
+                    e.classList.remove("judge0-style-hidden");
+                } else {
+                    e.classList.add("judge0-style-hidden");
+                }
+            });
+        });
     },
     reverse(name) {
         document.querySelectorAll(`.judge0-${name}-hidden`).forEach(e => {
