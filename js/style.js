@@ -4,14 +4,14 @@ import { IS_ELECTRON } from "./electron.js";
 import { IS_PUTER } from "./puter.js";
 
 const style = {
-    SUPPORTED_STYLES: ["default", "minimal", "standalone", "electron"],
+    SUPPORTED_STYLES: ["default", "minimal", "standalone", "electron", "puter"],
     DEFAULT_STYLE: "default",
     apply(name) {
         const resolvedName = style.SUPPORTED_STYLES.includes(name) ? name : style.DEFAULT_STYLE;
         if (resolvedName !== "default") {
             style.apply("default");
             document.querySelectorAll(`.judge0-${resolvedName}-hidden`).forEach(e => {
-                e.classList.add("judge0-hidden");
+                e.classList.add("judge0-style-hidden");
             });
         } else {
             style.SUPPORTED_STYLES.forEach(s => style.reverse(s));
@@ -19,7 +19,7 @@ const style = {
     },
     reverse(name) {
         document.querySelectorAll(`.judge0-${name}-hidden`).forEach(e => {
-            e.classList.remove("judge0-hidden");
+            e.classList.remove("judge0-style-hidden");
         });
     }
 };

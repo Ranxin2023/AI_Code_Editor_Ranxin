@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <script src="https://js.puter.com/v2/"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
@@ -82,7 +84,7 @@
 
 <body>
     <div id="judge0-site-navigation" class="ui top fixed borderless menu">
-        <a id="judge0-header" href="https://judge0.com" target="_blank" class="header item judge0-minimal-hidden judge0-standalone-hidden judge0-electron-hidden">
+        <a id="judge0-header" href="https://judge0.com" target="_blank" class="header item judge0-minimal-hidden judge0-standalone-hidden judge0-electron-hidden judge0-puter-hidden">
             <img id="judge0-logo" src="./images/icon_var2_rounded_512.png">
         </a>
         <div class="ui simple dropdown item">
@@ -91,12 +93,12 @@
             <div class="menu judge0-file-menu">
                 <div id="judge0-open-file-btn" class="item">
                     <span class="description">+O</span>
-                    <span class="text">Open File...</span>
+                    <span class="text"><i class="file icon"></i>Open File...</span>
                     <input type="file" id="open-file-input" style="display: none;">
                 </div>
                 <div id="judge0-save-btn" class="item">
                     <span class="description">+S</span>
-                    <span class="text">Save</span>
+                    <span class="text"><i class="save icon"></i>Save</span>
                 </div>
             </div>
         </div>
@@ -104,8 +106,11 @@
             <span class="text">Help</span>
             <i class="dropdown icon"></i>
             <div class="menu judge0-file-menu">
-                <a href="PRIVACY.md" class="link text item" target="_blank">Privacy Policy</a>
-                <a href="TERMS.md" class="link text item" target="_blank">Terms of Service</a>
+                <a href="https://github.com/judge0/ide" class="link text item" target="_blank"><i class="external square alternate icon"></i>GitHub Repository</a>
+                <a href="https://github.com/judge0/ide/tree/master/embed" class="link text item" target="_blank"><i class="external square alternate icon"></i>Embed Guide</a>
+                <a href="https://platform.sulu.sh/apis/judge0" class="link text item" target="_blank"><i class="external square alternate icon"></i>HTTP API Documentation</a>
+                <a href="PRIVACY.md" class="link text item" target="_blank"><i class="external square alternate icon"></i>Privacy Policy</a>
+                <a href="TERMS.md" class="link text item" target="_blank"><i class="external square alternate icon"></i>Terms of Service</a>
             </div>
         </div>
         <div class="item">
@@ -126,23 +131,25 @@
             </div>
         </div>
         <div class="item">
-            <button id="run-btn" class="ui primary labeled icon button" data-content="+↵" data-position="bottom center">
-                <i class="play icon"></i>Run Code
+            <button id="run-btn" class="ui primary labeled icon button" data-content="+↵">
+                <i class="play icon"></i>
+                Run Code
             </button>
         </div>
         <div class="right menu">
             <div id="judge0-theme-toggle-btn" class="icon link item" data-content="">
                 <i id="judge0-theme-toggle-btn-icon" class="sun icon"></i>
             </div>
-            <a class="icon item judge0-minimal-hidden judge0-electron-hidden" href="https://platform.sulu.sh/apis/judge0" target="_blank" data-content="API Docs">
-                <i class="book icon"></i>
-            </a>
-            <a class="icon item judge0-minimal-hidden judge0-electron-hidden" href="https://github.com/judge0/ide/tree/master/embed" target="_blank" data-content="Embed">
-                <i class="code icon"></i>
-            </a>
-            <a class="icon item judge0-minimal-hidden judge0-electron-hidden" href="https://github.com/judge0/ide" target="_blank" data-content="GitHub Repository">
-                <i class="github icon"></i>
-            </a>
+            <div class="item judge0-minimal-hidden judge0-puter-hidden">
+                <button id="judge0-sign-in-btn" class="ui basic labeled icon button">
+                    <i class="sign-in icon"></i>
+                    Sign in with Puter
+                </button>
+                <button id="judge0-sign-out-btn" class="ui basic labeled icon button" data-content="Sign out">
+                    <i class="sign-out icon"></i>
+                    <span id="judge0-puter-username">Sign out</span>
+                </button>
+            </div>
         </div>
     </div>
 

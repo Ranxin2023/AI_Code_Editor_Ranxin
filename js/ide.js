@@ -1,4 +1,4 @@
-import { IS_PUTER } from "./puter.js";
+import { usePuter } from "./puter.js";
 
 const API_KEY = ""; // Get yours at https://platform.sulu.sh/apis/judge0
 
@@ -125,7 +125,7 @@ function showHttpError(jqXHR) {
 
 function handleRunError(jqXHR) {
     showHttpError(jqXHR);
-    $runBtn.removeClass("disabled");
+    $runBtn.removeClass("loading");
 
     window.top.postMessage(JSON.parse(JSON.stringify({
         event: "runError",
@@ -149,7 +149,7 @@ function handleResult(data) {
 
     stdoutEditor.setValue(output);
 
-    $runBtn.removeClass("disabled");
+    $runBtn.removeClass("loading");
 
     window.top.postMessage(JSON.parse(JSON.stringify({
         event: "postExecution",
@@ -177,7 +177,7 @@ function run() {
         showError("Error", "Source code can't be empty!");
         return;
     } else {
-        $runBtn.addClass("disabled");
+        $runBtn.addClass("loading");
     }
 
     stdoutEditor.setValue("");
@@ -309,7 +309,7 @@ function saveFile(content, filename) {
 }
 
 async function openAction() {
-    if (IS_PUTER) {
+    if (usePuter()) {
         gPuterFile = await puter.ui.showOpenFilePicker();
         openFile(await (await gPuterFile.read()).text(), gPuterFile.name);
     } else {
@@ -318,7 +318,7 @@ async function openAction() {
 }
 
 async function saveAction() {
-    if (IS_PUTER) {
+    if (usePuter()) {
         if (gPuterFile) {
             gPuterFile.write(sourceEditor.getValue());
         } else {
@@ -605,7 +605,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         e.innerText = `${superKey}${e.innerText}`;
     });
 
-    if (IS_PUTER) {
+    if (usePuter()) {
         puter.ui.onLaunchedWithItems(async function (items) {
             gPuterFile = items[0];
             openFile(await (await gPuterFile.read()).text(), gPuterFile.name);
