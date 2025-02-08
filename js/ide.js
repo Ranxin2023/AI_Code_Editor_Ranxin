@@ -513,11 +513,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                     break;
                 case "s": // Ctrl+S, Cmd+S
                     e.preventDefault();
-                    save();
+                    saveAction();
                     break;
                 case "o": // Ctrl+O, Cmd+O
                     e.preventDefault();
-                    open();
+                    openAction();
                     break;
                 case "+": // Ctrl+Plus
                 case "=": // Some layouts use '=' for '+'

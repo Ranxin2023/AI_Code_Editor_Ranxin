@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (IS_ELECTRON) {
         style.apply("electron");
     } else if (IS_PUTER) {
-        style.apply("standalone");
+        style.apply("puter");
     } else {
         style.apply(query.get("style"));
     }
