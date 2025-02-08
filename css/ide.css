@@ -11,7 +11,11 @@
 
 #judge0-chat-messages {
     flex-grow: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
+}
+
+#judge0-chat-messages pre {
+    overflow-x: auto;
 }
 
 .judge0-user-message {
@@ -19,6 +23,7 @@
     margin-right: 1em !important;
     margin-top: 1em !important;
     max-width: 66%;
+    overflow-wrap: break-word;
     width: fit-content;
 }
 
