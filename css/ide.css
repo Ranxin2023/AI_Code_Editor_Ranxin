@@ -15,9 +15,11 @@
 }
 
 .judge0-user-message {
-    margin-left: 33% !important;
+    margin-left: auto !important;
+    margin-right: 1em !important;
     margin-top: 1em !important;
     max-width: 66%;
+    width: fit-content;
 }
 
 #judge0-chat-input-container {
