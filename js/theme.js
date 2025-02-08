@@ -17,7 +17,7 @@ const theme = {
 
         monaco.editor.setTheme(isLight ? "vs-light" : "vs-dark");
 
-        [".ui.menu", ".ui.input", ".ui.basic.button", ".ui.segment"].forEach(s => document.querySelectorAll(s).forEach(e => {
+        [".ui.menu", ".ui.input", ".ui.basic.button", ".ui.segment", ".ui.message"].forEach(s => document.querySelectorAll(s).forEach(e => {
             if (isLight) {
                 e.classList.remove("inverted");
             } else {
