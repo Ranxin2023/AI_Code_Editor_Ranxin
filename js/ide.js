@@ -1,4 +1,4 @@
-import { IS_PUTER } from "./puter.js";
+import { usePuter } from "./puter.js";
 
 const API_KEY = ""; // Get yours at https://platform.sulu.sh/apis/judge0
 
@@ -31,7 +31,7 @@ var fontSize = 13;
 
 var layout;
 
-var sourceEditor;
+export var sourceEditor;
 var stdinEditor;
 var stdoutEditor;
 
@@ -67,22 +67,36 @@ var layoutConfig = {
             type: "column",
             content: [{
                 type: "component",
-                componentName: "stdin",
-                id: "stdin",
-                title: "Input",
+                height: 66,
+                componentName: "ai",
+                id: "ai",
+                title: "AI Coding Assistant",
                 isClosable: false,
                 componentState: {
                     readOnly: false
                 }
             }, {
-                type: "component",
-                componentName: "stdout",
-                id: "stdout",
-                title: "Output",
-                isClosable: false,
-                componentState: {
-                    readOnly: true
-                }
+                type: "stack",
+                content: [
+                    {
+                        type: "component",
+                        componentName: "stdin",
+                        id: "stdin",
+                        title: "Input",
+                        isClosable: false,
+                        componentState: {
+                            readOnly: false
+                        }
+                    }, {
+                        type: "component",
+                        componentName: "stdout",
+                        id: "stdout",
+                        title: "Output",
+                        isClosable: false,
+                        componentState: {
+                            readOnly: true
+                        }
+                    }]
             }]
         }]
     }]
@@ -125,7 +139,7 @@ function showHttpError(jqXHR) {
 
 function handleRunError(jqXHR) {
     showHttpError(jqXHR);
-    $runBtn.removeClass("disabled");
+    $runBtn.removeClass("loading");
 
     window.top.postMessage(JSON.parse(JSON.stringify({
         event: "runError",
@@ -149,7 +163,7 @@ function handleResult(data) {
 
     stdoutEditor.setValue(output);
 
-    $runBtn.removeClass("disabled");
+    $runBtn.removeClass("loading");
 
     window.top.postMessage(JSON.parse(JSON.stringify({
         event: "postExecution",
@@ -177,7 +191,7 @@ function run() {
         showError("Error", "Source code can't be empty!");
         return;
     } else {
-        $runBtn.addClass("disabled");
+        $runBtn.addClass("loading");
     }
 
     stdoutEditor.setValue("");
@@ -309,7 +323,7 @@ function saveFile(content, filename) {
 }
 
 async function openAction() {
-    if (IS_PUTER) {
+    if (usePuter()) {
         gPuterFile = await puter.ui.showOpenFilePicker();
         openFile(await (await gPuterFile.read()).text(), gPuterFile.name);
     } else {
@@ -318,7 +332,7 @@ async function openAction() {
 }
 
 async function saveAction() {
-    if (IS_PUTER) {
+    if (usePuter()) {
         if (gPuterFile) {
             gPuterFile.write(sourceEditor.getValue());
         } else {
@@ -555,7 +569,7 @@ function sendChatRequest(selectedCode, question, responseDiv) {
 
 window.addEventListener("resize", refreshLayoutSize);
 document.addEventListener("DOMContentLoaded", async function () {
-    $("#select-language").dropdown();
+    $(".ui.selection.dropdown").dropdown();
     $("[data-content]").popup({
         lastResort: "left center"
     });
@@ -601,33 +615,37 @@ document.addEventListener("DOMContentLoaded", async function () {
         // console.log("enter code inside file")
         if (e.metaKey || e.ctrlKey) {
             switch (e.key) {
-                case "Enter": // Ctrl+Enter, Cmd+Enter
+                case "Enter":
                     e.preventDefault();
                     run();
                     break;
-                case "s": // Ctrl+S, Cmd+S
+                case "s":
                     e.preventDefault();
-                    save();
+                    saveAction();
                     break;
-                case "o": // Ctrl+O, Cmd+O
+                case "o":
                     e.preventDefault();
-                    open();
+                    openAction();
                     break;
-                case "+": // Ctrl+Plus
-                case "=": // Some layouts use '=' for '+'
+                case "+":
+                case "=":
                     e.preventDefault();
                     fontSize += 1;
                     setFontSizeForAllEditors(fontSize);
                     break;
-                case "-": // Ctrl+Minus
+                case "-":
                     e.preventDefault();
                     fontSize -= 1;
                     setFontSizeForAllEditors(fontSize);
                     break;
-                case "0": // Ctrl+0
+                case "0":
                     e.preventDefault();
                     fontSize = 13;
                     setFontSizeForAllEditors(fontSize);
+                    break;
+                case "`":
+                    e.preventDefault();
+                    sourceEditor.focus();
                     break;
             }
         }
@@ -686,6 +704,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
         });
 
+        layout.registerComponent("ai", function (container, state) {
+            container.getElement()[0].appendChild(document.getElementById("judge0-chat-container"));
+        });
+
         layout.on("initialised", function () {
             setDefaults();
             refreshLayoutSize();
@@ -708,7 +730,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         e.innerText = `${superKey}${e.innerText}`;
     });
 
-    if (IS_PUTER) {
+    if (usePuter()) {
         puter.ui.onLaunchedWithItems(async function (items) {
             gPuterFile = items[0];
             openFile(await (await gPuterFile.read()).text(), gPuterFile.name);
