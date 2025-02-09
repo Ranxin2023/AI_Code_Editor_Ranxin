@@ -461,6 +461,98 @@ function refreshLayoutSize() {
     layout.updateSize();
 }
 
+// add the chat feature above
+function showChatBoxAboveSelection(selection, selectedText) {
+    // Remove any existing chat box
+    const existingChatBox = document.querySelector(".inline-chat-box");
+    if (existingChatBox) {
+        existingChatBox.remove();
+    }
+
+    // Get the editor's position to place the chat box
+    const editorDomNode = sourceEditor.getDomNode();
+    const editorBoundingRect = editorDomNode.getBoundingClientRect();
+    const position = sourceEditor.getScrolledVisiblePosition(selection.getStartPosition());
+
+    if (!position) {
+        return;
+    }
+
+    // Create the chat box element
+    const chatBox = document.createElement("div");
+    chatBox.className = "inline-chat-box";
+    chatBox.style.position = "absolute";
+    chatBox.style.left = `${editorBoundingRect.left + position.left}px`;
+    chatBox.style.top = `${editorBoundingRect.top + position.top - 60}px`; // Adjust height to place it above selection
+    chatBox.style.background = "#fff";
+    chatBox.style.border = "1px solid #ccc";
+    chatBox.style.padding = "10px";
+    chatBox.style.borderRadius = "8px";
+    chatBox.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+    chatBox.style.zIndex = "1000";
+
+    chatBox.innerHTML = `
+        
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <strong>Chat Assistant</strong>
+        <button 
+            style="background: none; border: none; font-size: 14px; cursor: pointer; color: red;"
+            onclick="this.parentElement.parentElement.remove();">
+            X
+        </button>
+    </div>
+    <p><em>${selectedText}</em></p>
+    <textarea 
+        placeholder="Ask a question about this code..." 
+        rows="2" 
+        style="width: 100%; margin-top: 5px;"></textarea>
+    <button 
+        class="sendButton"
+        style="margin-top: 5px; background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 5px;">
+        Send
+    </button>
+    <div class="response" style="margin-top: 10px;">Processing...</div>
+    `;
+
+    // Append the chat box to the body
+    document.body.appendChild(chatBox);
+
+    // Handle chat send button
+    const button = chatBox.querySelector(".sendButton");
+    button.addEventListener("click", () => {
+        const question = chatBox.querySelector("textarea").value;
+        if (question.trim()) {
+            const responseDiv = chatBox.querySelector(".response");
+            responseDiv.innerText = "Processing...";
+            sendChatRequest(selectedText, question, responseDiv);
+        }
+    });
+
+    // Handle close button
+    // const closeButton = chatBox.querySelector("button:first-of-type");
+    // closeButton.addEventListener("click", () => {
+    //     chatBox.remove();
+    // });
+}
+
+function sendChatRequest(selectedCode, question, responseDiv) {
+    // Example: Make an AJAX call to send the selected code and question to the backend
+    $.ajax({
+        url: "http://localhost:3000/chat",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            message: `Code: ${selectedCode}\nQuestion: ${question}`,
+        }),
+        success: function (data) {
+            responseDiv.innerText = data.reply;
+        },
+        error: function () {
+            responseDiv.innerText = "Failed to fetch response.";
+        },
+    });
+}
+
 window.addEventListener("resize", refreshLayoutSize);
 document.addEventListener("DOMContentLoaded", async function () {
     $("#select-language").dropdown();
@@ -489,6 +581,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     $("#open-file-input").change(function (e) {
         const selectedFile = e.target.files[0];
         if (selectedFile) {
+            
             const reader = new FileReader();
             reader.onload = function (e) {
                 openFile(e.target.result, selectedFile.name);
@@ -505,6 +598,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     $statusLine = $("#judge0-status-line");
 
     $(document).on("keydown", "body", function (e) {
+        // console.log("enter code inside file")
         if (e.metaKey || e.ctrlKey) {
             switch (e.key) {
                 case "Enter": // Ctrl+Enter, Cmd+Enter
@@ -555,6 +649,15 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
 
             sourceEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, run);
+             // Add Code Selection Listener
+            sourceEditor.onDidChangeCursorSelection((event) => {
+                const selectedText = sourceEditor.getModel().getValueInRange(
+                    event.selection
+                );
+                if (selectedText.trim()) {
+                    showChatBoxAboveSelection(event.selection, selectedText);
+                }
+            });
         });
 
         layout.registerComponent("stdin", function (container, state) {
