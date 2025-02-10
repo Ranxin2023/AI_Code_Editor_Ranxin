@@ -79,6 +79,29 @@ Judge0 IDE is licensed under the [MIT License](https://github.com/judge0/ide/blo
     - LLMs like OpenAI’s GPT or similar models are highly proficient at understanding natural language and generating contextually relevant responses.
     - They can analyze code, explain concepts, and provide debugging suggestions based on context.
 
+### How LLMs Are Integrated
+1. Error Analysis:
+    - User’s code compilation errors are sent to the backend.
+    - The LLM analyzes error messages and provides specific fixes.
+2. Autocomplete Suggestions:
+    - When a user types in the chat, the LLM predicts the most relevant completions dynamically.
+    - Suggestions are fetched from the LLM through an API, ensuring they are contextually accurate.
+3. Code Context and Explanation:
+    - The user highlights a block of code in the editor.
+    - The highlighted code and user query are sent to the LLM.
+    - The LLM provides a detailed explanation or optimization tips for the selected code.
+4. AI Chat Assistant:
+    - Users can ask general programming questions.
+    - The LLM generates answers that are specific, detailed, and context-aware.
+
+### Why LLMs Enhance the Project
+- Context-Aware Responses:
+    - LLMs use the user’s input, highlighted code, and error context to provide precise solutions.
+- Improved Productivity:
+    - Automates repetitive debugging and research tasks, enabling developers to focus on creative problem-solving.
+- Dynamic Learning:
+    - Helps users learn by offering detailed explanations of code and concepts.
+
 ## How you start the project
 1. Clone the project
 ```sh
@@ -105,9 +128,17 @@ The backend of this project powers the AI-enhanced code editor by providing vari
 1. Compilation API
     - Endpoint: `POST /compile`
     - **Purpose**: Compiles the user's code and returns the results, including error messages if the compilation fails.
+    - How It Works:
+        - Receives the user’s code and associated parameters.
+        - Executes the code using a sandboxed compiler or interpreter.
+        - Captures any errors and outputs and returns them to the frontend.
+    
 2. Autocomplete API
     - Endpoint: `POST /autocomplete`
     - **Purpose**: Provides suggestions as the user types in the chat or code editor.
+    - How It Works:
+        - Matches the user’s partial input with pre-defined or dynamically generated suggestions.
+        - Returns the most relevant suggestions for display in the frontend.
     
 3. Chat API
     - Endpoint: `POST /chat`
