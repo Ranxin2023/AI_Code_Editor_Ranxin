@@ -6,7 +6,18 @@ const app = express();
 const PORT = 3000;
 const cors = require("cors");
 const { exec } = require("child_process");
-
+const suggestionsData = [
+    "What is the purpose of this code?",
+    "How does this algorithm work?",
+    "What is the error here?",
+    "Can you explain this syntax?",
+    "How do I fix this issue?",
+    "What is the structure of this program?",
+    "What are the best practices for this?",
+    "How to optimize this code?",
+    "What is the time complexity?",
+    "What does this function do?"
+];
 app.use(cors());
 // Middleware
 app.use(bodyParser.json());
@@ -73,6 +84,24 @@ app.post("/compile", (req, res) => {
 
         res.json({ success: true, output: stdout });
     });
+});
+// Autocomplete endpoint
+app.post("/autocomplete", (req, res) => {
+    const { query } = req.body; // User input query
+    if (!query || query.trim() === "") {
+        return res.status(400).json({ suggestions: [] });
+    }
+
+    // Filter suggestions based on query
+    const filteredSuggestions = suggestionsData.filter((suggestion) =>
+        suggestion.toLowerCase().includes(query.toLowerCase())
+    );
+
+    // Limit the number of suggestions to return
+    const limitedSuggestions = filteredSuggestions.slice(0, 5);
+    console.log("suggestions", limitedSuggestions)
+    // Respond with the filtered suggestions
+    res.json({ suggestions: limitedSuggestions });
 });
 
 // Start the server
