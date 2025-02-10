@@ -17,7 +17,7 @@ constexpr auto kInfiniteCost{ std::numeric_limits< CostTable::value_type >::max(
 auto dijkstra( Vertex const start, Vertex const end, Graph const & graph, CostTable & costTable )
 {
     std::fill( costTable.begin(), costTable.end(), kInfiniteCost );
-    costTable[ start ] = 0;
+    cotTable[ start ] = 0;
 
     std::set< std::pair< CostTable::value_type, Vertex > > minHeap;
     minHeap.emplace( 0, start );
