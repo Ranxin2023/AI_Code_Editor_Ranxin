@@ -51,6 +51,81 @@
     <link type="text/css" rel="stylesheet" href="css/semantic.css">
     <link type="text/css" rel="stylesheet" href="css/site.css">
 
+    <style>
+        #chat-container {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 300px;
+            background: #f9f9f9;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        #chat-header {
+            background: #007bff;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        #chat-body {
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        #chat-input {
+            border-top: 1px solid #ccc;
+            display: flex;
+        }
+
+        #chat-input textarea {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        #chat-input button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .inline-chat-box {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .inline-chat-box textarea {
+            width: 100%;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            resize: none;
+        }
+
+        .inline-chat-box button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
     <title>Judge0 IDE</title>
     <meta name="title" content="Judge0 IDE">
     <meta name="description" content="Free and open-source online code editor and compiler">
@@ -215,10 +290,309 @@
         © 2016-2025 Judge0 d.o.o. – All Rights Reserved.
     </a>
 
+    <div id="chat-container">
+        <div id="chat-header">Chat Assistant</div>
+        <div id="chat-body">
+            <div id="chat-messages"></div>
+            <div id="chat-input">
+                <textarea id="chat-textarea" placeholder="Type your question..."></textarea>
+                <button id="chat-send">Send</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("sw.js").then(() => console.log("Service Worker Registered"));
         }
+
+        // Toggle Chat Visibility
+        $("#chat-header").on("click", function () {
+            $("#chat-body").slideToggle();
+        });
+        // let editor;
+
+        // // Initialize Monaco Editor
+        // require(["vs/editor/editor.main"], function () {
+        //     editor = monaco.editor.create(document.getElementById("judge0-site-content"), {
+        //         value: "// Start coding here...\n",
+        //         language: "javascript",
+        //         theme: "vs-dark",
+        //     });
+
+        //     // Detect code selection
+        //     editor.onDidChangeCursorSelection((e) => {
+        //         const selectedText = editor.getModel().getValueInRange(editor.getSelection());
+        //         if (selectedText.trim()) {
+        //             showInlineChatBox(selectedText, e.position);
+        //         }
+        //     });
+        // });
+
+        // Handle Chat Input
+        $("#chat-send").on("click", function () {
+            const message = $("#chat-textarea").val();
+            if (message.trim()) {
+                $("#chat-messages").append(`<div><strong>You:</strong> ${message}</div>`);
+                $("#chat-textarea").val("");
+
+                // Send message to the server
+                $.ajax({
+                    url: "http://localhost:3000/chat",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ message }),
+                    success: function (data) {
+                        $("#chat-messages").append(
+                            `<div><strong>AI:</strong> ${data.reply}</div>`
+                        );
+                    },
+                    error: function () {
+                        $("#chat-messages").append(
+                            `<div><strong>AI:</strong> Sorry, something went wrong.</div>`
+                        );
+                    },
+                });
+            }
+        });
+        // // Handle Chat Input
+        // $("#chat-send").on("click", function () {
+        //     const message = $("#chat-textarea").val();
+        //     const selectedText = editor.getModel().getValueInRange(editor.getSelection());
+        //     console.log("Selected text is", selectedText)
+        //     if (message.trim() && selectedText.trim()) {
+        //         $("#chat-messages").append(`<div><strong>You:</strong> ${message}</div>`);
+        //         $("#chat-textarea").val("");
+
+        //         // Call sendChatRequest with the selected code and question
+        //         sendChatRequest(selectedText, message, null); // Pass null for the inline chatBox since this is the global chat
+        //     } else {
+        //         alert("Please select some code and enter a question before sending.");
+        //     }
+        // });
+
+        // // Send chat request to the backend
+        // function sendChatRequest(selectedText, question, chatBox) {
+        //     $.ajax({
+        //         url: "http://localhost:3000/chat",
+        //         method: "POST",
+        //         contentType: "application/json",
+        //         data: JSON.stringify({
+        //             message: `Code: ${selectedText}\nQuestion: ${question}`,
+        //         }),
+        //         success: function (data) {
+        //             if (chatBox) {
+        //                 // If called from an inline chat box
+        //                 chatBox.querySelector(".response").innerText = data.reply;
+        //             } else {
+        //                 // If called from the main chat box
+        //                 $("#chat-messages").append(
+        //                     `<div><strong>AI:</strong> ${data.reply}</div>`
+        //                 );
+        //             }
+        //         },
+        //         error: function () {
+        //             if (chatBox) {
+        //                 chatBox.querySelector(".response").innerText = "Failed to fetch response.";
+        //             } else {
+        //                 $("#chat-messages").append(
+        //                     `<div><strong>AI:</strong> Sorry, something went wrong.</div>`
+        //                 );
+        //             }
+        //         },
+        //     });
+        // }
+        // function showInlineChatBox(selectedText, position) {
+        //     // Create a chat box dynamically
+        //     const chatBox = document.createElement("div");
+        //     chatBox.className = "inline-chat-box";
+        //     chatBox.style.position = "absolute";
+        //     chatBox.style.left = `${position.column * 8}px`;
+        //     chatBox.style.top = `${position.lineNumber * 18}px`;
+        //     chatBox.style.zIndex = 1000;
+        //     chatBox.style.backgroundColor = "#f9f9f9";
+        //     chatBox.style.padding = "10px";
+        //     chatBox.style.borderRadius = "8px";
+        //     chatBox.style.boxShadow = "0px 4px 6px rgba(0,0,0,0.1)";
+        //     chatBox.innerHTML = `
+        //         <strong>Chat Assistant:</strong>
+        //         <p><em>${selectedText}</em></p>
+        //         <textarea placeholder="Ask a question..." rows="3" style="width: 100%; margin-top: 5px;"></textarea>
+        //         <button style="margin-top: 5px; background-color: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 4px;">Send</button>
+        //         <div class="response" style="margin-top: 10px;"></div>
+        //     `;
+
+        //     document.body.appendChild(chatBox);
+
+        //     // Handle Send button click
+        //     const button = chatBox.querySelector("button");
+        //     button.addEventListener("click", () => {
+        //         const question = chatBox.querySelector("textarea").value;
+        //         if (question.trim()) {
+        //             chatBox.querySelector(".response").innerText = "Processing...";
+        //             sendChatRequest(selectedText, question, chatBox);
+        //         }
+        //     });
+        // }
+
     </script>
 </body>
+
 </html>
+<!-- 
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        var require = {
+            paths: {
+                "vs": "./vendor/monaco-editor-0.44.0/min/vs"
+            }
+        };
+    </script>
+
+    <script src="./vendor/monaco-editor-0.44.0/min/vs/loader.js"></script>
+    <script src="./vendor/monaco-editor-0.44.0/min/vs/editor/editor.main.nls.js"></script>
+    <script src="./vendor/monaco-editor-0.44.0/min/vs/editor/editor.main.js"></script>
+
+    <style>
+        #judge0-site-content {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        #chat-container {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 300px;
+            background: #f9f9f9;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        #chat-header {
+            background: #007bff;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        #chat-body {
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        #chat-input {
+            border-top: 1px solid #ccc;
+            display: flex;
+        }
+
+        #chat-input textarea {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        #chat-input button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+
+    <title>Monaco Editor with Chat</title>
+</head>
+
+<body>
+    <div id="judge0-site-navigation">
+        <div id="judge0-site-content"></div>
+    </div>
+
+    <div id="chat-container">
+        <div id="chat-header">Chat Assistant</div>
+        <div id="chat-body">
+            <div id="chat-messages"></div>
+            <div id="chat-input">
+                <textarea id="chat-textarea" placeholder="Type your question..."></textarea>
+                <button id="chat-send">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let editor;
+
+        // Initialize Monaco Editor
+        require(["vs/editor/editor.main"], function () {
+            editor = monaco.editor.create(document.getElementById("judge0-site-content"), {
+                value: "// Start coding here...\n",
+                language: "cpp",
+                theme: "vs-dark",
+            });
+
+            // Add event listener for code selection
+            editor.onDidChangeCursorSelection((e) => {
+                const selectedText = editor.getModel().getValueInRange(e.selection);
+                if (selectedText.trim()) {
+                    console.log("Selected Code:", selectedText);
+                }
+            });
+        });
+
+        // Toggle Chat Visibility
+        $("#chat-header").on("click", function () {
+            $("#chat-body").slideToggle();
+        });
+
+        // Send Chat Request to the Backend
+        function sendChatWithSelectedCode(selectedCode, question) {
+            $.ajax({
+                url: "http://localhost:3000/chat",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    message: `Code: ${selectedCode}\nQuestion: ${question}`,
+                }),
+                success: function (data) {
+                    $("#chat-messages").append(
+                        `<div><strong>AI:</strong> ${data.reply}</div>`
+                    );
+                },
+                error: function () {
+                    $("#chat-messages").append(
+                        `<div><strong>AI:</strong> Sorry, something went wrong.</div>`
+                    );
+                },
+            });
+        }
+
+        // Handle Chat Input
+        $("#chat-send").on("click", function () {
+            const message = $("#chat-textarea").val();
+            const selectedCode = editor.getModel().getValueInRange(editor.getSelection());
+            if (message.trim() && selectedCode.trim()) {
+                $("#chat-messages").append(`<div><strong>You:</strong> ${message}</div>`);
+                $("#chat-textarea").val("");
+                sendChatWithSelectedCode(selectedCode, message);
+            }
+        });
+    </script>
+</body>
+</html> -->
