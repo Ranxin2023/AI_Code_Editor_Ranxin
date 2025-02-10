@@ -1,6 +1,13 @@
 # AI Code Editor
-
-
+## Table of Content
+- [About](#about)
+- [Objective](#objective)
+- [Background](#background)
+- [Features](#features)
+- [Judge0 Resources](#judge0-resources)
+- [Integration of Large Language Models (LLMs) into the Project](#integration-of-large-language-models-llms-into-the-project)
+- [Key APIs](#key-apis)
+- [Future Improvements](#future-improvements)
 ## About
 [**Judge0 IDE**](https://ide.judge0.com) is a free and open-source online code editor that allows you to write and execute code from a rich set of languages. It's perfect for anybody who just wants to quickly write and run some code without opening a full-featured IDE on their computer. Moreover, it is also useful for teaching and learning or just trying out a new language.
 
@@ -10,16 +17,16 @@ Visit https://ide.judge0.com, and enjoy happy coding. :)
 
 ## Objective
 This project aims to take the foundational features of the Judge0 IDE and extend its capabilities with AI-powered functionalities, transforming it into an intelligent code editor. By integrating AI, the enhanced editor offers:
-    - Real-time autocomplete suggestions to assist with typing and coding efficiency.
-    - An AI Chat Assistant to provide contextual help, explanations, and debugging suggestions.
-    - The ability to select and analyze code snippets, allowing users to interact with specific sections of their code for focused assistance.
-    - Automated suggestions to fix compilation errors, enabling faster debugging and more efficient development.
+- Real-time autocomplete suggestions to assist with typing and coding efficiency.
+- An AI Chat Assistant to provide contextual help, explanations, and debugging suggestions.
+- The ability to select and analyze code snippets, allowing users to interact with specific sections of their code for focused assistance.
+- Automated suggestions to fix compilation errors, enabling faster debugging and more efficient development.
 
 ## Background
 Judge0 IDE is an open-source online code editor and compiler that supports multiple programming languages. It offers developers a platform to write, run, and debug code directly in their browsers without needing local setup. Its core functionalities include:
-    - A powerful and versatile Monaco Editor for code editing.
-    - Language support for popular programming languages such as Python, Java, C++, and more.
-    - An API-driven approach for code execution and compilation.
+- A powerful and versatile Monaco Editor for code editing.
+- Language support for popular programming languages such as Python, Java, C++, and more.
+- An API-driven approach for code execution and compilation.
 
 ## Features
 1. Fix Compilation Errors:
@@ -48,7 +55,7 @@ Judge0 IDE is an open-source online code editor and compiler that supports multi
     - Integrates seamlessly with the editor, allowing users to interact without switching contexts.
 
 
-## Judge0 resources
+## Judge0 Resources
 [![Judge0 IDE Screenshot](./.github/screenshot.png)](https://ide.judge0.com)
 
 [![License](https://img.shields.io/github/license/judge0/ide?color=2185d0&style=flat-square)](https://github.com/judge0/ide/blob/master/LICENSE)
