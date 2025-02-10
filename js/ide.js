@@ -596,23 +596,9 @@ function showFixSuggestion(errorMessage, startLine, endLine) {
     });
 }
 
-// Send AI Request for Fix Suggestions
-function sendAIErrorRequest(code, errorMessage, question, chatBox) {
-    $.ajax({
-        url: "http://localhost:3000/chat", // Replace with your AI backend
-        method: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({
-            message: `Fix the following error:\nError: ${errorMessage}\nCode:\n${code}\nQuestion: ${question}`,
-        }),
-        success: function (data) {
-            chatBox.querySelector(".response").innerText = data.reply;
-        },
-        error: function () {
-            chatBox.querySelector(".response").innerText = "Failed to get a response from AI.";
-        },
-    });
-}
+
+
+
 window.addEventListener("resize", refreshLayoutSize);
 document.addEventListener("DOMContentLoaded", async function () {
     $(".ui.selection.dropdown").dropdown();
@@ -701,6 +687,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         layout = new GoldenLayout(layoutConfig, $("#judge0-site-content"));
 
         layout.registerComponent("source", function (container, state) {
+            
             sourceEditor = monaco.editor.create(container.getElement()[0], {
                 automaticLayout: true,
                 scrollBeyondLastLine: true,
@@ -733,6 +720,114 @@ document.addEventListener("DOMContentLoaded", async function () {
             //         showFixSuggestion(message, startLineNumber, endLineNumber);
             //     }
             // });
+            // monaco.editor.onDidChangeMarkers(() => {
+            //     console.log("Marker changes")
+            //     const markers = monaco.editor.getModelMarkers({});
+            //     markers.forEach(marker => {
+            //         const { message, startLineNumber, endLineNumber } = marker;
+            
+            //         // Highlight the error in the editor
+            //         highlightError(startLineNumber, endLineNumber);
+            
+            //         // Use AI to provide suggestions
+            //         getAISuggestions(message, startLineNumber, endLineNumber);
+            //     });
+            // });
+             // Add a listener for when the markers (errors) change
+            // monaco.editor.onDidChangeMarkers((uris) => {
+            //     console.log("Markers updated:", uris);
+            //     checkErrorsAndSuggest();
+            // });
+
+            // // Trigger error checking manually when the user types
+            // sourceEditor.onDidChangeModelContent(() => {
+            //     monaco.editor.setModelMarkers(sourceEditor.getModel(), "owner", [
+            //         // Example of manually adding a marker (you can replace this with real diagnostics)
+            //         {
+            //             startLineNumber: 2,
+            //             startColumn: 1,
+            //             endLineNumber: 2,
+            //             endColumn: 10,
+            //             message: "Example error: Syntax issue here",
+            //             severity: monaco.MarkerSeverity.Error,
+            //         },
+            //     ]);
+            // });
+            sourceEditor.onDidChangeModelContent(() => {
+                const fullCode = sourceEditor.getValue(); // Get the entire code from the editor
+            
+                // Show processing indicator (optional)
+                $statusLine.html("Compiling...");
+            
+                // Send the full code to the backend for compilation
+                fetch("http://localhost:3000/compile", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ code: fullCode }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // Clear the status line
+                        $statusLine.html("");
+            
+                        // Check if there are any errors
+                        if (data.errors && data.errors.length > 0) {
+                            // Process and display only the first error
+                            const error = data.errors[data.errors.length-1];
+                            console.log(`Error: ${error.message}`);
+                            console.log(`At line ${error.line}, column ${error.column}`);
+                        
+                            // Use AI suggestions for the first error
+                            fetch("http://localhost:3000/chat", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    message: `Code issue: ${error.message}. Provide a suggestion.`,
+                                }),
+                            })
+                                .then((response) => response.json())
+                                .then((aiData) => {
+                                    // Display AI suggestions in a floating box or inline
+                                    console.log("AI Suggestion:", aiData.reply);
+                        
+                                    const cursorCoords = sourceEditor.getScrolledVisiblePosition({
+                                        lineNumber: error.line,
+                                        column: error.column || 1, // Default to column 1 if not provided
+                                    });
+                        
+                                    const suggestionBox = document.createElement("div");
+                                    suggestionBox.className = "suggestion-box";
+                                    suggestionBox.style.position = "absolute";
+                                    suggestionBox.style.left = `${cursorCoords.left}px`;
+                                    suggestionBox.style.top = `${cursorCoords.top + 40}px`; // Position slightly above
+                                    suggestionBox.style.backgroundColor = "#fff";
+                                    suggestionBox.style.border = "1px solid #ccc";
+                                    suggestionBox.style.padding = "10px";
+                                    suggestionBox.style.zIndex = "1000";
+                                    suggestionBox.style.boxShadow = "0px 4px 6px rgba(0, 0, 0, 0.1)";
+                                    suggestionBox.style.fontSize = "12px";
+                        
+                                    suggestionBox.innerHTML = `
+                                        <strong>AI Suggestion:</strong>
+                                        <p>${aiData.reply}</p>
+                                        <button style="margin-top: 5px; background: red; color: white; border: none; cursor: pointer; padding: 5px 10px; border-radius: 3px;" onclick="this.parentNode.remove()">Close</button>
+                                    `;
+                        
+                                    const editorDomNode = sourceEditor.getDomNode();
+                                    editorDomNode.appendChild(suggestionBox);
+                                })
+                                .catch((error) => console.error("Failed to get AI suggestion:", error));
+                        } else {
+                            console.log("Code compiled successfully!");
+                        }
+                        
+                    })
+                    .catch((error) => {
+                        $statusLine.html("Compilation failed");
+                        console.error("Failed to compile code:", error);
+                    });
+            });
+            
         });
 
         layout.registerComponent("stdin", function (container, state) {
