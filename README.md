@@ -31,3 +31,22 @@ Thanks a lot to all [contributors](https://github.com/judge0/ide/graphs/contribu
 
 ## License
 Judge0 IDE is licensed under the [MIT License](https://github.com/judge0/ide/blob/master/LICENSE).
+
+## How you start the project
+1. Clone the project
+```sh
+git clone https://github.com/Ranxin2023/AI_Code_Editor_Ranxin
+```
+2. install all the dependencies
+```sh
+npm install
+```
+3. running the frontend
+```sh
+python3 -m http.server 8000
+```
+
+4. run the backend
+```sh
+node server.js
+```
